@@ -213,7 +213,7 @@ class App extends Component {
         <Content style={{ margin: '5px 16px 0', overflow: 'initial' }}>
           <Row type="flex" justify="center" align="top" >
             <Col span={24}>
-              <Card title="Entrada" style={{ margin: '10px', overflow: 'initial' }} >
+              <Card title="Entrada" style={{ margin: '5px', overflow: 'initial' }} >
                 <Row type="flex" justify="center" align="top" >
                   <Col span={20}>
                     <label>Mensagem:</label><br />
@@ -233,7 +233,7 @@ class App extends Component {
           </Row>
           <Row type="flex" justify="center" align="top">
             <Col span={24}>
-              <Card title="Matriz" style={{ margin: '10px', overflow: 'initial' }}
+              <Card title="Matriz" style={{ margin: '5px', overflow: 'initial' }}
                 extra={<Switch defaultChecked onChange={this.toggleGradeHandler} />}>
                 {this.state.showGrade && <Row type="flex" justify="center" align="top">
                   {
@@ -259,7 +259,7 @@ class App extends Component {
           </Row>
           <Row type="flex" justify="center" align="top">
             <Col span={24}>
-              <Card title="Resultado" style={{ margin: '10px', overflow: 'initial' }}>
+              <Card title="Resultado" style={{ margin: '5px', overflow: 'initial' }}>
                 <p>{this.state.resultado}</p>
               </Card>
             </Col>
