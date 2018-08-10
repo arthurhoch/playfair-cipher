@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 
 
-import { Input, Row, Col, Card, Layout, Menu, Icon } from 'antd';
+import { Input, Row, Col, Card, Layout, Menu, Icon, Switch } from 'antd';
 
 
 const { Header, Content, Footer } = Layout;
@@ -25,7 +25,14 @@ class App extends Component {
     ],
     mensagem: '',
     palavra: '',
-    resultado: ''
+    resultado: '',
+    showGrade: true
+  }
+
+  toggleGradeHandler = () => {
+    this.setState({
+      showGrade: !this.state.showGrade
+    });
   }
 
   mensagemHandler = (e) => {
@@ -49,7 +56,7 @@ class App extends Component {
       for (let i = 0; i < matriz.length; i++) {
         for (let j = 0; j < matriz[i].length; j++) {
           if (palavra[++count]) {
-            matriz[i][j] = palavra[count];
+            matriz[j][i] = palavra[count];
           }
         }
       }
@@ -205,7 +212,7 @@ class App extends Component {
         </Header>
         <Content style={{ margin: '5px 16px 0', overflow: 'initial' }}>
           <Row type="flex" justify="center" align="top" >
-            <Col span={20}>
+            <Col span={24}>
               <Card title="Entrada" style={{ margin: '10px', overflow: 'initial' }} >
                 <Row type="flex" justify="center" align="top" >
                   <Col span={20}>
@@ -225,9 +232,10 @@ class App extends Component {
             </Col>
           </Row>
           <Row type="flex" justify="center" align="top">
-            <Col span={20}>
-              <Card title="Matriz" style={{ margin: '10px', overflow: 'initial' }}>
-                <Row type="flex" justify="center" align="top">
+            <Col span={24}>
+              <Card title="Matriz" style={{ margin: '10px', overflow: 'initial' }}
+                extra={<Switch defaultChecked onChange={this.toggleGradeHandler} />}>
+                {this.state.showGrade && <Row type="flex" justify="center" align="top">
                   {
                     this.state.grade.map((linha, index) =>
                       <span key={index}>
@@ -245,12 +253,12 @@ class App extends Component {
                       </span>
                     )
                   }
-                </Row>
+                </Row>}
               </Card>
             </Col>
           </Row>
           <Row type="flex" justify="center" align="top">
-            <Col span={20}>
+            <Col span={24}>
               <Card title="Resultado" style={{ margin: '10px', overflow: 'initial' }}>
                 <p>{this.state.resultado}</p>
               </Card>
