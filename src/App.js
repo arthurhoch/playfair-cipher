@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import './App.css';
 
 
-import { Input, Row, Col, Card, Layout, Menu } from 'antd';
+import { Input, Row, Col, Card, Layout, Menu, Icon } from 'antd';
+
 
 const { Header, Content, Footer } = Layout;
 
@@ -194,12 +195,18 @@ class App extends Component {
             style={{ lineHeight: '64px' }}
           >
             <Menu.Item key="1">Playfair cipher</Menu.Item>
+            <Menu.Item key="2">
+              <a href="https://github.com/arthurhoch/playfair-cipher">
+                <Icon style={{ fontSize: 30 }} type="github" spin={true} /> Github
+              </a>
+            </Menu.Item>
+
           </Menu>
         </Header>
         <Content style={{ margin: '5px 16px 0', overflow: 'initial' }}>
           <Row type="flex" justify="center" align="top" >
             <Col span={20}>
-              <Card title="Entrada" style={{  margin: '10px', overflow: 'initial' }} >
+              <Card title="Entrada" style={{ margin: '10px', overflow: 'initial' }} >
                 <Row type="flex" justify="center" align="top" >
                   <Col span={20}>
                     <label>Mensagem:</label><br />
@@ -219,7 +226,7 @@ class App extends Component {
           </Row>
           <Row type="flex" justify="center" align="top">
             <Col span={20}>
-              <Card title="Matriz" style={{  margin: '10px', overflow: 'initial' }}>
+              <Card title="Matriz" style={{ margin: '10px', overflow: 'initial' }}>
                 <Row type="flex" justify="center" align="top">
                   {
                     this.state.grade.map((linha, index) =>
