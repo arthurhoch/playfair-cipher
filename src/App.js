@@ -102,12 +102,29 @@ class App extends Component {
             }
           }
         }
-
       }
 
       this.setState({
         palavra: palavra,
         grade: matriz
+      })
+      this.updateStrins();
+    }
+  }
+
+  updateStrins = () => {
+    const mensagem = this.state.mensagem;
+    const mensagemD = this.state.mensagemD;
+    if (mensagem.length > 0) {
+      const resultado = this.gerarResultado(mensagem);
+      this.setState({
+        resultado: resultado,
+      })
+    }
+    if (mensagemD.length > 0) {
+      const resultadoD = this.gerarResultadoD(mensagemD);
+      this.setState({
+        resultadoD: resultadoD,
       })
     }
 
