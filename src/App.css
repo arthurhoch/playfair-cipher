@@ -34,6 +34,10 @@
   font-size: 1em;
 }
 
+.cardLetter .ant-card-body {
+  padding: 16px;
+}
+
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }

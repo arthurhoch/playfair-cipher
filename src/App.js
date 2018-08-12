@@ -10,24 +10,31 @@ const { Header, Content, Footer } = Layout;
 class App extends Component {
   state = {
     resetGrade: [
-      ['A', 'B', 'C', 'D', 'E'],
-      ['F', 'G', 'H', 'I', 'J'],
-      ['K', 'L', 'M', 'N', 'O'],
-      ['P', 'Q', 'R', 'S', 'T'],
-      ['U', 'v', 'X', 'Y', 'Z']
+      ['A', 'F', 'K', 'P', 'U'],
+      ['B', 'G', 'L', 'Q', 'V'],
+      ['C', 'H', 'M', 'R', 'X'],
+      ['D', 'I', 'N', 'S', 'Y'],
+      ['E', 'J', 'O', 'T', 'Z']
     ],
     grade: [
-      ['A', 'B', 'C', 'D', 'E'],
-      ['F', 'G', 'H', 'I', 'J'],
-      ['K', 'L', 'M', 'N', 'O'],
-      ['P', 'Q', 'R', 'S', 'T'],
-      ['U', 'v', 'X', 'Y', 'Z']
+      ['A', 'F', 'K', 'P', 'U'],
+      ['B', 'G', 'L', 'Q', 'V'],
+      ['C', 'H', 'M', 'R', 'X'],
+      ['D', 'I', 'N', 'S', 'Y'],
+      ['E', 'J', 'O', 'T', 'Z']
     ],
     mensagem: '',
+    mensagemD: '',
     palavra: '',
     resultado: '',
+    resultadoD: '',
     showGrade: true
   }
+
+  gridStyle = {
+    padding: '15px'
+
+  };
 
   toggleGradeHandler = () => {
     this.setState({
@@ -36,14 +43,33 @@ class App extends Component {
   }
 
   mensagemHandler = (e) => {
+    const resultado = this.gerarResultado(e.target.value.toUpperCase());
     this.setState({
       mensagem: e.target.value.toUpperCase(),
-      resultado: this.gerarResultado(e.target.value.toUpperCase())
+      resultado: resultado,
+    })
+  }
+
+  mensagemDHandler = (e) => {
+    console.log('a  ');
+    const resultadoD = this.gerarResultadoD(e.target.value.toUpperCase());
+    this.setState({
+      mensagemD: e.target.value.toUpperCase(),
+      resultadoD: resultadoD
     })
   }
 
   palavraHandler = (e) => {
     const palavra = e.target.value.toUpperCase();
+    if (palavra.length > this.state.palavra.length) {
+      if (this.state.palavra.includes(palavra[palavra.length - 1]) && palavra.length > 1) {
+        return;
+      }
+      if (!/^[A-Z]+$/.test(palavra)) {
+        return;
+      }
+    }
+
     let matriz = this.state.grade;
     if (palavra.length === 0) {
       const resetGrade = this.state.resetGrade;
@@ -53,12 +79,30 @@ class App extends Component {
       })
     } else {
       let count = -1;
+      let trocadas = '';
       for (let i = 0; i < matriz.length; i++) {
         for (let j = 0; j < matriz[i].length; j++) {
           if (palavra[++count]) {
+            trocadas += matriz[j][i];
             matriz[j][i] = palavra[count];
           }
         }
+      }
+      count = 0;
+
+      for (let index = 0; index < trocadas.length; index++) {
+        const letraTrocada = trocadas[index];
+        const letra = palavra[index];
+        let achou = true;
+        for (let i = matriz.length - 1; i >= 0; i--) {
+          for (let j = matriz[i].length - 1; j >= 0; j--) {
+            if (matriz[j][i] === letra && achou) {
+              achou = !achou;
+              matriz[j][i] = letraTrocada;
+            }
+          }
+        }
+
       }
 
       this.setState({
@@ -78,6 +122,49 @@ class App extends Component {
     return resultado;
   }
 
+
+  procuraMesmaLinhaD = (l1, l2) => {
+    if (!l1 || !l2) {
+      return undefined;
+    }
+    const matriz = this.state.grade;
+    var resultado = undefined;
+
+    for (let i = 0; i < matriz.length; i++) {
+      for (let j = 0; j < matriz[i].length; j++) {
+        var m1 = matriz[i][j];
+        var m2 = matriz[i][j + 1] === undefined ? matriz[i][0] : matriz[i][j + 1];
+        if (m1 === l1 && m2 === l2) {
+
+          resultado = matriz[i][j - 1] === undefined ? matriz[i][matriz[i].length - 1] : matriz[i][j - 1];
+          resultado += m1;
+          return resultado;
+        }
+      }
+    }
+    return resultado;
+  }
+
+  procuraMesmaColunaD = (l1, l2) => {
+    if (!l1 || !l2) {
+      return undefined;
+    }
+    const matriz = this.state.grade;
+    var resultado = undefined;
+
+    for (let i = 0; i < matriz.length; i++) {
+      for (let j = 0; j < matriz[i].length; j++) {
+        var m1 = matriz[j][i];
+        var m2 = matriz[j + 1] === undefined ? matriz[0][i] : matriz[j + 1][i];
+        if (m1 === l1 && m2 === l2) {
+          resultado = matriz[j - 1] === undefined ? matriz[matriz[i].length - 1][i] : matriz[j - 1][i];
+          resultado += m1;
+          return resultado;
+        }
+      }
+    }
+    return resultado;
+  }
 
   procuraMesmaLinha = (l1, l2) => {
     if (!l1 || !l2) {
@@ -179,6 +266,30 @@ class App extends Component {
     return resultado;
   }
 
+  processaDuplaD = (dupla) => {
+    var resultado = this.procuraMesmaLinhaD(dupla[0], dupla[1]);
+    if (!resultado) {
+      resultado = this.procuraMesmaColunaD(dupla[0], dupla[1]);
+      if (!resultado) {
+        resultado = this.procuraQuadrante(dupla[0], dupla[1]);
+      }
+    }
+    return resultado;
+  }
+
+  gerarResultadoD = (palavra) => {
+    var resultado = '';
+    const duplas = this.palavraSplit(palavra);
+    for (let index = 0; index < duplas.length; index++) {
+      let tmp = this.processaDuplaD(duplas[index]);
+      if (tmp) {
+        resultado += tmp;
+      }
+    }
+
+    return resultado;
+  }
+
   gerarResultado = (palavra) => {
     var resultado = '';
     const duplas = this.palavraSplit(palavra);
@@ -191,6 +302,7 @@ class App extends Component {
 
     return resultado;
   }
+
   render() {
     return (
       <Layout>
@@ -216,8 +328,15 @@ class App extends Component {
               <Card title="Entrada" style={{ margin: '5px', overflow: 'initial' }} >
                 <Row type="flex" justify="center" align="top" >
                   <Col span={20}>
-                    <label>Mensagem:</label><br />
+                    <label>Encriptar:</label><br />
                     <Input type="text" onChange={this.mensagemHandler} value={this.state.mensagem} />
+                    <br />
+                  </Col>
+                </Row>
+                <Row type="flex" justify="center" align="top" >
+                  <Col span={20}>
+                    <label>Desencriptar:</label><br />
+                    <Input type="text" onChange={this.mensagemDHandler} value={this.state.mensagemD} />
                     <br />
                   </Col>
                 </Row>
@@ -233,34 +352,38 @@ class App extends Component {
           </Row>
           <Row type="flex" justify="center" align="top">
             <Col span={24}>
-              <Card title="Matriz" style={{ margin: '5px', overflow: 'initial' }}
-                extra={<Switch defaultChecked onChange={this.toggleGradeHandler} />}>
-                {this.state.showGrade && <Row type="flex" justify="center" align="top">
-                  {
-                    this.state.grade.map((linha, index) =>
-                      <span key={index}>
-                        {
-                          linha.map((letra, indexLetra) =>
-                            <Col key={indexLetra + 1 * 7}>
-                              {/* <Input type="text" onChange={this.letraHandler} value={letra}/> */}
-                              <Card color="#108ee9">
-                                <span className="letter">{letra}</span>
-                              </Card >
-                            </Col>
-                          )
-                        }
-                        <br />
-                      </span>
-                    )
-                  }
-                </Row>}
+              <Card title="Encriptado" style={{ margin: '5px', overflow: 'initial' }}>
+                <p>{this.state.resultado}</p>
               </Card>
             </Col>
           </Row>
           <Row type="flex" justify="center" align="top">
             <Col span={24}>
-              <Card title="Resultado" style={{ margin: '5px', overflow: 'initial' }}>
-                <p>{this.state.resultado}</p>
+              <Card title="Desencriptado" style={{ margin: '5px', overflow: 'initial' }}>
+                <p>{this.state.resultadoD}</p>
+              </Card>
+            </Col>
+          </Row>
+          <Row type="flex" justify="center" align="top">
+            <Col span={24}>
+              <Card title="Matriz"
+                extra={<Switch defaultChecked onChange={this.toggleGradeHandler} />}>
+                {this.state.showGrade && <Row type="flex" justify="center" align="top">
+                  {
+                    this.state.grade.map((linha, index) =>
+                      <div key={index}>
+                        {linha.map((letra, indexLetra) =>
+                          <Col key={indexLetra + 1 * 7}>
+                            <Card className="cardLetter" color="#108ee9">
+                              <span >{letra}</span>
+                            </Card >
+                          </Col>
+                        )
+                        }
+                      </div>
+                    )
+                  }
+                </Row>}
               </Card>
             </Col>
           </Row>
