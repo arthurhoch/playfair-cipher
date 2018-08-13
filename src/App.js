@@ -256,12 +256,19 @@ class App extends Component {
         if (m === l1) {
           locax1 = j;
           locay1 = i;
-        } else if (m === l2) {
+        } 
+        if (m === l2) {
           locax2 = j;
           locay2 = i;
         }
       }
     }
+
+    if (l1 === l2) {
+      locax1 = locax2;
+      locay1 = locay2;
+    }
+
     r1 = matriz[locax1] === undefined ? undefined : matriz[locax1][locay2];
     r2 = matriz[locax2] === undefined ? undefined : matriz[locax2][locay1];
 
@@ -295,6 +302,9 @@ class App extends Component {
   }
 
   gerarResultadoD = (palavra) => {
+    if (palavra.length % 2 !== 0) {
+      palavra += 'X';
+    }
     var resultado = '';
     const duplas = this.palavraSplit(palavra);
     for (let index = 0; index < duplas.length; index++) {
@@ -308,6 +318,9 @@ class App extends Component {
   }
 
   gerarResultado = (palavra) => {
+    if (palavra.length % 2 !== 0) {
+      palavra += 'X';
+    }
     var resultado = '';
     const duplas = this.palavraSplit(palavra);
     for (let index = 0; index < duplas.length; index++) {
